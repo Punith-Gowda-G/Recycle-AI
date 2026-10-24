@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#153c2c">
+  <title>{% block title %}RecycleLink{% endblock %} · RecycleLink</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4 30 10 26 12 31 20 25 20 20 12 16 14Z"/><path d="M33 23 27 34 26 29 17 29 20 24 29 24 29 20Z"/><path d="M13 34 5 23 10 24 14 16 17 21 13 29 17 31Z"/></svg></span><span>Recycle<span>Link</span></span></a>
+  <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+  <nav class="nav-links">
+    <a href="{{ url_for('marketplace') }}" class="{% if request.endpoint == 'marketplace' %}active{% endif %}">Marketplace</a>
+    <a href="{{ url_for('features_hub') }}" class="{% if request.endpoint in ['features_hub','ai_detect','recommendations','price_prediction','impact_dashboard','route_planner'] %}active{% endif %}">Smart tools</a>
+    {% if current_user %}<a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">Dashboard</a><a href="{{ url_for('notifications_page') }}" class="notification-nav" aria-label="Notifications">Alerts{% if unread_notifications %}<span class="notification-count" id="notification-count">{{ unread_notifications }}</span>{% else %}<span class="notification-count" id="notification-count" hidden>0</span>{% endif %}</a>{% if current_user.role == 'admin' %}<a href="{{ url_for('admin_dashboard') }}">Admin</a>{% endif %}<a href="{{ url_for('create_listing') }}" class="nav-cta">+ List waste</a>
+    <form method="post" action="{{ url_for('logout') }}" class="inline-form"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="nav-logout" type="submit">Log out</button></form>
+    <span class="avatar" title="Signed in as {{ current_user.name }}">{{ current_user.name[:1]|upper }}</span>
+    {% else %}<a href="{{ url_for('login') }}">Log in</a><a href="{{ url_for('register') }}" class="nav-cta">Get started <span>↗</span></a>{% endif %}
+  </nav>
+</header>
+{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-wrap">{% for category, message in messages %}<div class="flash flash-{{ category }}"><span>{{ message }}</span><button type="button" class="flash-close" aria-label="Dismiss message">×</button></div>{% endfor %}</div>{% endif %}{% endwith %}
+<main>{% block content %}{% endblock %}</main>
+<footer class="footer"><div class="footer-brand"><a class="brand" href="{{ url_for('index') }}"><span class="brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4 30 10 26 12 31 20 25 20 20 12 16 14Z"/><path d="M33 23 27 34 26 29 17 29 20 24 29 24 29 20Z"/><path d="M13 34 5 23 10 24 14 16 17 21 13 29 17 31Z"/></svg></span><span>Recycle<span>Link</span></span></a><p>Give waste a second life.</p></div><div class="footer-meta"><span>Built for a cleaner circular economy.</span><span>RecycleLink · Student project</span></div></footer>
+</body></html>
